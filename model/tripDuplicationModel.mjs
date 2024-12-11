@@ -11,6 +11,10 @@ const tripDuplicationSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    bookingStatus: {
+      type: String,
+      trim: true
+    }
   },
   {
     timestamps: true,
