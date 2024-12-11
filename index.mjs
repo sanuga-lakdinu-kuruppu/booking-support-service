@@ -2,6 +2,8 @@ import createConnection from "./config/databaseConnection.mjs";
 import {
   updateBookingDocumentForBookingCreation,
   createNewRecordWithForTripDuplication,
+  updateBookingStatus,
+  deleteSingleTripDuplication
 } from "./service/service.mjs";
 
 createConnection();
@@ -20,6 +22,12 @@ export const handler = async (event) => {
     } else if (internalEventType === "EVN_TRIP_CREATED_FOR_TRIP_DUPLICATION") {
       const { tripId, capacity, bookingStatus } = event.detail;
       await createNewRecordWithForTripDuplication(tripId, capacity, bookingStatus);
+    } else if (internalEventType === "EVN_TRIP_BOOKING_STATUS_UPDATED") {
+      const { tripId, bookingStatus } = event.detail;
+      await updateBookingStatus(tripId, bookingStatus);
+    } else if (internalEventType === "EVN_SINGLE_TRIP_DELETED") {
+      const { tripId } = event.detail;
+      await deleteSingleTripDuplication(tripId);
     }
     console.log("booking support service event processed successfully.");
   } catch (error) {
