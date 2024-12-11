@@ -1,5 +1,5 @@
 import { Booking } from "../model/bookingModel.mjs";
-import { TripCapacity } from "../model/tripCapacityModel.mjs";
+import { TripDuplication } from "../model/tripDuplicationModel.mjs";
 import AWS from "aws-sdk";
 
 const eventBridge = new AWS.EventBridge({
@@ -39,15 +39,16 @@ export const updateBookingDocumentForBookingCreation = async (
   }
 };
 
-export const createNewRecordWithVehicleCapacity = async (tripId, capacity) => {
+export const createNewRecordWithForTripDuplication = async (tripId, capacity, bookingStatus) => {
   try {
     const newData = {
       tripId: tripId,
       capacity: capacity,
+      bookingStatus: bookingStatus
     };
-    const newTripCapacity = new TripCapacity(newData);
+    const newTripCapacity = new TripDuplication(newData);
     const savedTripCapacity = await newTripCapacity.save();
-    console.log(`trip capacity saved successfully :)`);
+    console.log(`trip duplication saved successfully :)`);
   } catch (error) {
     console.log(`booking support service error occured: ${error}`);
   }

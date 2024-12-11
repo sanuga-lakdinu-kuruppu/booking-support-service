@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const tripCapacitySchema = new mongoose.Schema(
+const tripDuplicationSchema = new mongoose.Schema(
   {
     tripId: {
       type: Number,
@@ -17,4 +17,4 @@ const tripCapacitySchema = new mongoose.Schema(
   }
 );
 
-export const TripCapacity = mongoose.model("TripCapacity", tripCapacitySchema);
+export const TripDuplication = mongoose.model("TripDuplication", tripDuplicationSchema);
