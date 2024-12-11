@@ -53,3 +53,30 @@ export const createNewRecordWithForTripDuplication = async (tripId, capacity, bo
     console.log(`booking support service error occured: ${error}`);
   }
 };
+
+export const updateBookingStatus = async (tripId, bookingStatus) => {
+  try {
+    const newData = {
+      tripId: tripId,
+      bookingStatus: bookingStatus
+    }
+    const updatedTripDuplication = await TripDuplication.findOneAndUpdate(
+      { tripId: tripId },
+      newData,
+      { new: true, runValidators: true }
+    );
+    console.log(`trip duplication updated successfully :)`);
+  } catch (error) {
+    console.log(`booking support service error occured: ${error}`);
+  }
+};
+
+export const deleteSingleTripDuplication = async (tripId) => {
+  try {
+    const deletedTrip = await TripDuplication.findOneAndDelete({ tripId: tripId });
+    if (!deletedTrip) return null;
+    console.log(`trip duplication deleted successfully :)`);
+  } catch (error) {
+    console.log(`booking support service error occured: ${error}`);
+  }
+};
