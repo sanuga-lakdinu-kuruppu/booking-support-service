@@ -28,6 +28,12 @@ export const handler = async (event) => {
     } else if (internalEventType === "EVN_SINGLE_TRIP_DELETED") {
       const { tripId } = event.detail;
       await deleteSingleTripDuplication(tripId);
+    } 
+    
+    
+    else if (internalEventType === "EVN_SINGLE_TRIP_DELETED") {
+      const { tripId } = event.detail;
+      await deleteSingleTripDuplication(tripId);
     }
     console.log("booking support service event processed successfully.");
   } catch (error) {
