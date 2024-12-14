@@ -13,12 +13,15 @@ const tripDuplicationSchema = new mongoose.Schema(
     },
     bookingStatus: {
       type: String,
-      trim: true
-    }
+      trim: true,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-export const TripDuplication = mongoose.model("TripDuplication", tripDuplicationSchema);
+export const TripDuplication = mongoose.model(
+  "TripDuplication",
+  tripDuplicationSchema
+);
