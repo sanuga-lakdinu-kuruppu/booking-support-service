@@ -1,8 +1,16 @@
 import { Booking } from "../model/bookingModel.mjs";
 import { TripDuplication } from "../model/tripDuplicationModel.mjs";
 import AWS from "aws-sdk";
+import {
+  SchedulerClient,
+  DeleteScheduleCommand,
+} from "@aws-sdk/client-scheduler";
 
 const eventBridge = new AWS.EventBridge({
+  region: process.env.FINAL_AWS_REGION,
+});
+
+const schedulerClient = new SchedulerClient({
   region: process.env.FINAL_AWS_REGION,
 });
 
@@ -105,6 +113,9 @@ export const checkBookingExpiration = async (bookingId, tripId, seatNumber) => {
       );
       if (!updatedBooking) return null;
       await triggerBookingExpiredEvent(tripId, seatNumber);
+      const params = { Name: `booking-expiration-${bookingId}` };
+      const command = new DeleteScheduleCommand(params);
+      await schedulerClient.send(command);
     }
     console.log(`booking expiration updated successfully :)`);
   } catch (error) {
