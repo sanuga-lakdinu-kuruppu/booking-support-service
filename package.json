@@ -1,6 +1,6 @@
 {
   "name": "booking-support-service",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "main": "index.mjs",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -13,6 +13,7 @@
   "description": "support functions for booking services in the busriya system",
   "type": "module",
   "dependencies": {
+    "@aws-sdk/client-scheduler": "^3.714.0",
     "aws-sdk": "^2.1692.0",
     "dotenv": "^16.4.7",
     "mongoose": "^8.8.4",
