@@ -43,7 +43,7 @@ export const handler = async (event) => {
       const { tripId } = event.detail;
       await deleteSingleTripDuplication(tripId);
     } else if (
-      internalEventType === "EVN_BOOKIsNG_CREATED_FOR_DELAYED_BOOKING_CHECKING"
+      internalEventType === "EVN_BOOKING_CREATED_FOR_DELAYED_BOOKING_CHECKING"
     ) {
       console.log(
         `5, booking support service event triggered, ${internalEventType} `
