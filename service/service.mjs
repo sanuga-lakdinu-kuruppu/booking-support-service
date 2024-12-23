@@ -27,6 +27,7 @@ export const updateBookingDocumentForBookingCreation = async (
       endLocation: trip.endLocation,
       schedule: trip.schedule,
       vehicle: trip.vehicle,
+      route: trip.route,
       cancellationPolicy: trip.cancellationPolicy,
     };
 
@@ -100,7 +101,7 @@ export const checkBookingExpiration = async (bookingId, tripId, seatNumber) => {
     const params = { Name: `booking-expiration-${bookingId}` };
     const command = new DeleteScheduleCommand(params);
     await schedulerClient.send(command);
-    
+
     const foundTrip = await Booking.findOne({
       bookingId: bookingId,
     });
