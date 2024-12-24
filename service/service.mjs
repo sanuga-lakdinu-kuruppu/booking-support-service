@@ -127,6 +127,76 @@ export const checkBookingExpiration = async (bookingId, tripId, seatNumber) => {
   }
 };
 
+export const backupBookings = async () => {
+  try {
+    console.log("Midnight backup event triggered");
+    const bookings = await getBookingsOlderThanSevenDays();
+    if (bookings.length === 0) {
+      console.log("No trips found for backup.");
+      return;
+    }
+    await backupBookingsToS3(bookings);
+    await updateBackupStatus(bookings);
+    console.log("Booking backup process completed successfully.");
+  } catch (error) {
+    console.log(`Booking support service error occured: ${error}`);
+  }
+};
+
+const getBookingsOlderThanSevenDays = async () => {
+  const pastDays = new Date();
+  pastDays.setDate(
+    pastDays.getDate() - Number(process.env.BACKUP_CHEKCING_DAYS)
+  );
+
+  try {
+    const bookings = await Booking.find({
+      "trip.tripDate": { $lt: pastDays },
+      backedUpStatus: "NOT_BACKED_UP",
+    }).populate({
+      path: "commuter",
+    });
+    return bookings;
+  } catch (error) {
+    console.log(`Error fetching bookings: ${error}`);
+    throw new Error("Failed to fetch bookings.");
+  }
+};
+
+const backupBookingsToS3 = async (bookings) => {
+  try {
+    const bookingsBackup = JSON.stringify(bookings);
+
+    const params = {
+      Bucket: process.env.BOOKING_BUCKET_NAME,
+      Key: `backups/bookings/bookings_${new Date()
+        .toISOString()
+        .replace(/[-:.]/g, "")}.json`,
+      Body: bookingsBackup,
+      ContentType: "application/json",
+    };
+
+    await s3.putObject(params).promise();
+    console.log("Bookings backup uploaded successfully.");
+  } catch (error) {
+    console.log(`Error backing up bookings to S3: ${error}`);
+    throw new Error("Failed to upload backup to S3.");
+  }
+};
+
+const updateBackupStatus = async (bookings) => {
+  try {
+    for (const booking of bookings) {
+      booking.backedUpStatus = "BACKED_UP";
+      await booking.save();
+    }
+    console.log("Backup status updated successfully.");
+  } catch (error) {
+    console.log(`Error updating backup status: ${error}`);
+    throw new Error("Failed to update backup status.");
+  }
+};
+
 const triggerBookingExpiredEvent = async (tripId, seatNumber) => {
   try {
     const eventParams = {
