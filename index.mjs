@@ -7,6 +7,7 @@ import {
   checkBookingExpiration,
   backupBookings,
   deleteBookings,
+  deleteTripDuplications,
 } from "./service/service.mjs";
 
 createConnection();
@@ -63,6 +64,7 @@ export const handler = async (event) => {
         `7, booking support service event triggered, ${internalEventType} `
       );
       await deleteBookings();
+      await deleteTripDuplications();
     }
     console.log("booking support service event processed successfully.");
   } catch (error) {
