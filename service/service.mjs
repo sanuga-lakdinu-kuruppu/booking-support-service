@@ -1,5 +1,6 @@
 import { Booking } from "../model/bookingModel.mjs";
 import { TripDuplication } from "../model/tripDuplicationModel.mjs";
+import { Commuter } from "../model/commuterModel.mjs";
 import AWS from "aws-sdk";
 import {
   SchedulerClient,
@@ -140,6 +141,46 @@ export const backupBookings = async () => {
     console.log("Booking backup process completed successfully.");
   } catch (error) {
     console.log(`Booking support service error occured: ${error}`);
+  }
+};
+
+export const deleteBookings = async () => {
+  try {
+    console.log("Midnight deletion event triggered");
+    await deleteBookingsWithBackedUpStatus();
+    console.log("Booking deletion process completed successfully.");
+  } catch (error) {
+    console.log(`booking support service error occured: ${error}`);
+  }
+};
+
+const deleteBookingsWithBackedUpStatus = async () => {
+  try {
+    const bookingsToDelete = await Booking.find({
+      backedUpStatus: "BACKED_UP",
+    });
+
+    if (bookingsToDelete.length === 0) {
+      console.log("No bookings found with backedUpStatus: 'BACKED_UP'");
+      return;
+    }
+
+    const commuterIds = bookingsToDelete.map((booking) => booking.commuter);
+
+    const commutersDeleted = await Commuter.deleteMany({
+      _id: { $in: commuterIds },
+    });
+    console.log(`${commutersDeleted.deletedCount} related commuters deleted.`);
+
+    const bookingsDeleted = await Booking.deleteMany({
+      commuter: { $in: commuterIds },
+    });
+    console.log(
+      `${bookingsDeleted.deletedCount} bookings deleted with backedUpStatus: "BACKED_UP"`
+    );
+  } catch (error) {
+    console.log(`Error deleting bookings: ${error}`);
+    throw new Error("Failed to delete bookings.");
   }
 };
 
