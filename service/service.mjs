@@ -174,7 +174,7 @@ const removeOldTripDuplications = async () => {
     );
 
     const tripDuplications = await TripDuplication.deleteMany({
-      "trip.tripDate": { $lt: pastDays },
+      tripDate: { $lt: pastDays },
     });
 
     console.log(`${tripDuplications.deletedCount} trip duplication deleted"`);
