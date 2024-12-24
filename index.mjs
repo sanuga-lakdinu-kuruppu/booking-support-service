@@ -24,11 +24,12 @@ export const handler = async (event) => {
       console.log(
         `2, booking support service event triggered, ${internalEventType} `
       );
-      const { tripId, capacity, bookingStatus } = event.detail;
+      const { tripId, capacity, bookingStatus, tripDate } = event.detail;
       await createNewRecordWithForTripDuplication(
         tripId,
         capacity,
-        bookingStatus
+        bookingStatus,
+        tripDate
       );
     } else if (internalEventType === "EVN_TRIP_BOOKING_STATUS_UPDATED") {
       console.log(
