@@ -156,6 +156,34 @@ export const deleteBookings = async () => {
   }
 };
 
+export const deleteTripDuplications = async () => {
+  try {
+    console.log("Midnight deletion event triggered");
+    await removeOldTripDuplications();
+    console.log("Trip duplication deletion process completed successfully.");
+  } catch (error) {
+    console.log(`booking support service error occured: ${error}`);
+  }
+};
+
+const removeOldTripDuplications = async () => {
+  try {
+    const pastDays = new Date();
+    pastDays.setDate(
+      pastDays.getDate() - Number(process.env.BACKUP_CHEKCING_DAYS)
+    );
+
+    const tripDuplications = await TripDuplication.deleteMany({
+      "trip.tripDate": { $lt: pastDays },
+    });
+
+    console.log(`${tripDuplications.deletedCount} trip duplication deleted"`);
+  } catch (error) {
+    console.log(`Error deleting trips: ${error}`);
+    throw new Error("Failed to delete tripDuplications.");
+  }
+};
+
 const deleteBookingsWithBackedUpStatus = async () => {
   try {
     const bookingsToDelete = await Booking.find({
