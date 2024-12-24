@@ -15,6 +15,9 @@ const tripDuplicationSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    tripDate: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

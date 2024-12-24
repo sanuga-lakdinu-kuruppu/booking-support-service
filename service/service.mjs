@@ -51,13 +51,15 @@ export const updateBookingDocumentForBookingCreation = async (
 export const createNewRecordWithForTripDuplication = async (
   tripId,
   capacity,
-  bookingStatus
+  bookingStatus,
+  tripDate
 ) => {
   try {
     const newData = {
       tripId: tripId,
       capacity: capacity,
       bookingStatus: bookingStatus,
+      tripDate: tripDate,
     };
     const newTripCapacity = new TripDuplication(newData);
     const savedTripCapacity = await newTripCapacity.save();
