@@ -176,6 +176,7 @@ const deleteBookingsWithBackedUpStatus = async () => {
 
     const bookingsDeleted = await Booking.deleteMany({
       commuter: { $in: commuterIds },
+      backedUpStatus: "BACKED_UP",
     });
     console.log(
       `${bookingsDeleted.deletedCount} bookings deleted with backedUpStatus: "BACKED_UP"`
