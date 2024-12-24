@@ -15,6 +15,8 @@ const schedulerClient = new SchedulerClient({
   region: process.env.FINAL_AWS_REGION,
 });
 
+const s3 = new AWS.S3();
+
 export const updateBookingDocumentForBookingCreation = async (
   bookingId,
   trip
